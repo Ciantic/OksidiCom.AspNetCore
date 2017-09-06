@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OksidiCom.AspNetCoreServices.Common.Db;
@@ -27,8 +28,9 @@ namespace OksidiCom.AspNetCoreServices.UserServices
 
             if (Environment.IsDevelopment())
             {
-                services.AddScoped<IDbContextConnectionConfiguration>(t => new DbContextConnectionConfiguration(
-                    new SqliteConnection(Configuration.GetConnectionString("Default"))
+                services.AddScoped(t => new DbContextConnectionConfiguration(
+                    new SqliteConnection(Configuration.GetConnectionString("Default")),
+                    (c, o) => o.UseSqlite(c)
                 ));
                 services.AddTransient<IInitDb, InitDbDev>();
             }

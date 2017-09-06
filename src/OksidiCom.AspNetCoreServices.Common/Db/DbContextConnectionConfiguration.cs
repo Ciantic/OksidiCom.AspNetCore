@@ -9,28 +9,22 @@ namespace OksidiCom.AspNetCoreServices.Common.Db
     /// <summary>
     /// This allows to share a DbConnection within a scope, e.g. between DbContexts so they can perform transactions 
     /// </summary>
-    public class DbContextConnectionConfiguration : IDbContextConnectionConfiguration, IDisposable
+    public class DbContextConnectionConfiguration : IDisposable
     {
         private readonly DbConnection _dbConnection;
+        private readonly Action<DbConnection, DbContextOptionsBuilder> _configuration;
         private readonly bool _dispose;
 
-        public DbContextConnectionConfiguration(DbConnection dbConnection, bool dispose = true)
+        public DbContextConnectionConfiguration(DbConnection dbConnection, Action<DbConnection, DbContextOptionsBuilder> configuration, bool dispose = true)
         {
             _dbConnection = dbConnection;
+            _configuration = configuration;
             _dispose = dispose;
         }
 
-        public object Configure(DbContextOptionsBuilder optionsBuilder)
+        public void Configure(DbContextOptionsBuilder optionsBuilder)
         {
-            if (_dbConnection is SqliteConnection)
-            {
-                optionsBuilder.UseSqlite(_dbConnection);
-            }
-            else
-            {
-                throw new Exception("Unknown connection for ConnectionProvider");
-            }
-            return null;
+            _configuration(_dbConnection, optionsBuilder);
         }
 
         public void Dispose()

@@ -12,11 +12,20 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 using AspNet.Security.OpenIdConnect.Primitives;
+using Microsoft.EntityFrameworkCore;
 
 namespace OksidiCom.AspNetCoreServices.UserServices
 {
     public static class IServiceCollectionExtension
     {
+        public class AddUserServicesOptions
+        {
+            public Action<IServiceProvider, DbContextOptionsBuilder> DbContextOptions { get; set; } = (s, c) =>
+            {
+                s.GetService<DbContextConnectionConfiguration>().Configure(c);
+            };
+        }
+
         /// <summary>
         /// User services middleware
         /// 
@@ -24,7 +33,7 @@ namespace OksidiCom.AspNetCoreServices.UserServices
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static void AddUserServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddUserServices(this IServiceCollection services, IConfiguration configuration, AddUserServicesOptions addUserServicesOptions = null)
         {
             // Ensure that AddMvcCore/AddMvc has not been called before registering user services
             for (int i = 0; i < services.Count; i++)
@@ -36,18 +45,28 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                 }
             }
 
-            // Add views provided in this assembly.     
-            services.Configure<RazorViewEngineOptions>(options =>
+            // Read the UserServices from appsettings.json
+            var userServicesConfiguration = new UserServicesConfiguration();
+            configuration.GetSection("UserServices").Bind(userServicesConfiguration);
+
+            // Code provided options
+            if (addUserServicesOptions == null)
             {
-                options.FileProviders.Add(new EmbeddedFileProvider(typeof(Startup).GetTypeInfo().Assembly));
+                addUserServicesOptions = new AddUserServicesOptions();
+            }
+
+            // Add views provided in this assembly.     
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.FileProviders.Add(new EmbeddedFileProvider(typeof(Startup).GetTypeInfo().Assembly));
             });
 
-            services.AddDbContext<UserServiceContext>((s, o) =>
-            {
-                o.UseOpenIddict();
-                s.GetService<IDbContextConnectionConfiguration>().Configure(o);
-            });
             services
+                .AddDbContext<UserServiceContext>((s, o) =>
+                {
+                    o.UseOpenIddict();
+                    addUserServicesOptions.DbContextOptions(s, o);
+                })
                 .AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<UserServiceContext>()
                 .AddDefaultTokenProviders();
@@ -70,17 +89,13 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                     o.LoginPath = "/Account/Login";
                     o.LogoutPath = "/Account/Logout";
                 });*/
-            
 
-            var authConfig = new AuthConfiguration();
-            configuration.GetSection("Auth").Bind(authConfig);
-
-            if (authConfig?.Google != null)
+            if (userServicesConfiguration?.Google != null)
             {
                 auth.AddGoogle(o =>
                 {
-                    o.ClientId = authConfig.Google.ClientId;
-                    o.ClientSecret = authConfig.Google.ClientSecret;
+                    o.ClientId = userServicesConfiguration.Google.ClientId;
+                    o.ClientSecret = userServicesConfiguration.Google.ClientSecret;
                     o.SignInScheme = "Identity.External";
                 });
             }
@@ -110,8 +125,6 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                 options.DisableHttpsRequirement();
                 options.AddDevelopmentSigningCertificate();
             });
-
- 
         }
     }
 }

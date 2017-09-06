@@ -12,7 +12,9 @@ using OksidiCom.AspNetCoreServices.Common.Db;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SampleApi.Db;
-
+using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Data.SqlClient;
 
 namespace SampleApi
 {
@@ -34,19 +36,20 @@ namespace SampleApi
             services.AddMvc();
             services.AddDbContext<BusinessDbContext>((s, o) =>
             {
-                s.GetService<IDbContextConnectionConfiguration>().Configure(o);
+                s.GetService<DbContextConnectionConfiguration>().Configure(o);
             });
 
             if (Environment.IsDevelopment())
             {
-                services.AddScoped<IDbContextConnectionConfiguration>(t => new DbContextConnectionConfiguration(
-                    new SqliteConnection(Configuration.GetConnectionString("Default"))
+                services.AddScoped(t => new DbContextConnectionConfiguration(
+                    new SqliteConnection(Configuration.GetConnectionString("Default")),
+                    (c, o) => o.UseSqlite(c)
                 ));
                 services.AddTransient<IInitDb, InitDbDev>();
             }
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitDb initDb, UserServiceContext us, BusinessDbContext bs)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitDb initDb)
         {
             
             app.UseDeveloperExceptionPage();
@@ -54,9 +57,6 @@ namespace SampleApi
 
             app.UseUserServices();
             app.UseMvc();
-
-            var a = us.Database.GetDbConnection().GetHashCode();
-            var b = bs.Database.GetDbConnection().GetHashCode();
 
             initDb.InitAsync().Wait();
             initDb.PopulateAsync().Wait();

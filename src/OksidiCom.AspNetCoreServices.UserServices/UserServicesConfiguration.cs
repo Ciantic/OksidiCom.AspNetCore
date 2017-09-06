@@ -1,6 +1,6 @@
 ﻿namespace OksidiCom.AspNetCoreServices.UserServices
 {
-    public class AuthConfiguration
+    public class UserServicesConfiguration
     {
         public class GoogleConfiguration
         {
