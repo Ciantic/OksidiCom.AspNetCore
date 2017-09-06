@@ -24,14 +24,14 @@ using OksidiCom.AspNetCoreServices.UserServices.ViewModels.Shared;
 
 namespace OksidiCom.AspNetCoreServices.UserServices.Controllers
 {
-    public class AuthorizationController : Controller
+    public class OpenIdController : Controller
     {
         private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly IOptions<IdentityOptions> _identityOptions;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthorizationController(
+        public OpenIdController(
             OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             IOptions<IdentityOptions> identityOptions,
             SignInManager<ApplicationUser> signInManager,

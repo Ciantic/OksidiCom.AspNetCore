@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace OksidiCom.AspNetCoreServices.UserServices.Controllers
 {
     [Authorize]
-    [Route("[controller]")]
+    [Route("connect/[controller]")]
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

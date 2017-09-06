@@ -16,30 +16,42 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OksidiCom.AspNetCoreServices.UserServices
 {
+
     public static class IServiceCollectionExtension
     {
-        public class UserServicesConfiguration
-        {
-            public class GoogleConfiguration
-            {
-                public string ClientId { get; set; }
-                public string ClientSecret { get; set; }
-            }
-            public GoogleConfiguration Google { get; set; }
-        }
-
         public class AddUserServicesOptions
         {
+            /// <summary>
+            /// Configure UserServices from appsettings.json, assumes "UserServices" property.
+            /// </summary>
+            /// <param name="configuration"></param>
             public void Configure(IConfiguration configuration)
             {
                 configuration.GetSection("UserServices").Bind(_configuration);
             }
 
+            /// <summary>
+            /// Configure manually the UserServices
+            /// </summary>
+            /// <param name="userServicesConfiguration"></param>
+            public void Configure(UserServicesConfiguration userServicesConfiguration)
+            {
+                _configuration = userServicesConfiguration;
+            }
+
+            /// <summary>
+            /// Add DbContext options for UserServicesContext
+            /// </summary>
+            /// <param name="builder"></param>
             public void AddDbContext(Action<DbContextOptionsBuilder> builder)
             {
                 _dbContextBuilder = (s, o) => builder(o);
             }
 
+            /// <summary>
+            /// Add DbContext options for UserServicesContext
+            /// </summary>
+            /// <param name="builder"></param>
             public void AddDbContext(Action<IServiceProvider, DbContextOptionsBuilder> builder)
             {
                 _dbContextBuilder = builder;
@@ -71,6 +83,8 @@ namespace OksidiCom.AspNetCoreServices.UserServices
 
             var opts = new AddUserServicesOptions();
             createOptions?.Invoke(opts);
+            var conf = opts._configuration;
+            var dbContextBuilder = opts._dbContextBuilder;
 
             // Add views provided in this assembly.     
             services.Configure<RazorViewEngineOptions>(o =>
@@ -82,30 +96,35 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                 .AddDbContext<UserServiceContext>((contextServices, builder) =>
                 {
                     builder.UseOpenIddict();
-                    opts._dbContextBuilder(contextServices, builder);
+                    dbContextBuilder(contextServices, builder);
                 })
-                .AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddIdentity<ApplicationUser, ApplicationRole>(o =>
+                {
+                    o.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                    //options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                    //options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                })
                 .AddEntityFrameworkStores<UserServiceContext>()
                 .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
+            services.ConfigureApplicationCookie(options =>
             {
-                options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                options.Cookie.Path = "/connect";
+                options.LoginPath = "/connect/Account/Login";
+                options.LogoutPath = "/connect/Account/Logout";
+            });
+
+            services.AddAntiforgery(o =>
+            {
+                o.Cookie.Path = "/connect";
             });
 
             var auth = services.AddAuthentication()
-                //.AddOAuthValidation()
                 .AddJwtBearer(o =>
                 {
-                    o.Audience = "http://localhost:5002/";
-                    o.Authority = "http://localhost:5002/";
-                });/*.AddCookie(o =>
-                {
-                    o.LoginPath = "/Account/Login";
-                    o.LogoutPath = "/Account/Logout";
-                });*/
+                    o.Audience = conf.Jwt.Audience;
+                    o.Authority = conf.Jwt.Authority;
+                });
 
             if (opts._configuration?.Google != null)
             {
@@ -133,6 +152,7 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                     options.AllowImplicitFlow()
                             .EnableAuthorizationEndpoint("/connect/authorize")
                             .EnableTokenEndpoint("/connect/token")
+                            .EnableLogoutEndpoint("/connect/logout")
                             .AllowRefreshTokenFlow();
 
                     // Allow client applications to use the grant_type=password flow.
