@@ -26,23 +26,11 @@ namespace SampleApi.Db
 {
     public class BusinessDbContext : DbContext
     {
-        private readonly IDbContextConnectionConfiguration connectionConfiguration;
-
         public DbSet<BusinessThing> BusinessThings { get; set; }
 
-        public BusinessDbContext(IDbContextConnectionConfiguration connectionConfiguration) : base()
+        public BusinessDbContext(DbContextOptions<BusinessDbContext> context) : base(context)
         {
-            this.connectionConfiguration = connectionConfiguration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            connectionConfiguration.Configure(optionsBuilder);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
+            
         }
     }
 
@@ -174,7 +162,10 @@ namespace SampleApi
         {
             services.AddUserServices(Configuration);
             services.AddMvc();
-            services.AddDbContext<BusinessDbContext>();
+            services.AddDbContext<BusinessDbContext>((s, o) =>
+            {
+                s.GetService<IDbContextConnectionConfiguration>().Configure(o);
+            });
 
             if (Environment.IsDevelopment())
             {
@@ -185,7 +176,7 @@ namespace SampleApi
             }
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitDb initDb)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitDb initDb, UserServiceContext us, BusinessDbContext bs)
         {
             
             app.UseDeveloperExceptionPage();
@@ -193,6 +184,10 @@ namespace SampleApi
 
             app.UseUserServices();
             app.UseMvc();
+
+            var a = us.Database.GetDbConnection().GetHashCode();
+            var b = bs.Database.GetDbConnection().GetHashCode();
+
             initDb.InitAsync().Wait();
             initDb.PopulateAsync().Wait();
         }

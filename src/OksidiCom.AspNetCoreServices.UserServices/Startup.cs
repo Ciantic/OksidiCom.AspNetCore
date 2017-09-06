@@ -97,7 +97,11 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                 options.FileProviders.Add(new EmbeddedFileProvider(typeof(Startup).GetTypeInfo().Assembly));
             });
 
-            services.AddDbContext<UserServiceContext>();
+            services.AddDbContext<UserServiceContext>((s, o) =>
+            {
+                o.UseOpenIddict();
+                s.GetService<IDbContextConnectionConfiguration>().Configure(o);
+            });
             services
                 .AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<UserServiceContext>()
@@ -171,17 +175,8 @@ namespace OksidiCom.AspNetCoreServices.UserServices.Db
 {
     public class UserServiceContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        private readonly IDbContextConnectionConfiguration connectionConfiguration;
-
-        public UserServiceContext(IDbContextConnectionConfiguration connectionConfiguration) : base()
+        public UserServiceContext(DbContextOptions<UserServiceContext> opts) : base(opts)
         {
-            this.connectionConfiguration = connectionConfiguration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            connectionConfiguration.Configure(optionsBuilder);
-            optionsBuilder.UseOpenIddict();
         }
     }
 
