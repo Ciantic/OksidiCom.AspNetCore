@@ -5,10 +5,6 @@ using System.Data.Common;
 
 namespace OksidiCom.AspNetCoreServices.Common.Db
 {
-    public interface IDbContextConnectionConfiguration
-    {
-        object Configure(DbContextOptionsBuilder optionsBuilder);
-    }
 
     /// <summary>
     /// This allows to share a DbConnection within a scope, e.g. between DbContexts so they can perform transactions 
