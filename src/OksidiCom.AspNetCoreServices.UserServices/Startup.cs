@@ -23,7 +23,10 @@ namespace OksidiCom.AspNetCoreServices.UserServices
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUserServices(Configuration);
+            services.AddUserServices(o =>
+            {
+                o.Configure(Configuration);
+            });
             services.AddMvc();
 
             if (Environment.IsDevelopment())

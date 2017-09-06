@@ -18,12 +18,36 @@ namespace OksidiCom.AspNetCoreServices.UserServices
 {
     public static class IServiceCollectionExtension
     {
+        public class UserServicesConfiguration
+        {
+            public class GoogleConfiguration
+            {
+                public string ClientId { get; set; }
+                public string ClientSecret { get; set; }
+            }
+            public GoogleConfiguration Google { get; set; }
+        }
+
         public class AddUserServicesOptions
         {
-            public Action<IServiceProvider, DbContextOptionsBuilder> DbContextOptions { get; set; } = (s, c) =>
+            public void Configure(IConfiguration configuration)
             {
-                s.GetService<DbContextConnectionConfiguration>().Configure(c);
-            };
+                configuration.GetSection("UserServices").Bind(_configuration);
+            }
+
+            public void AddDbContext(Action<DbContextOptionsBuilder> builder)
+            {
+                _dbContextBuilder = (s, o) => builder(o);
+            }
+
+            public void AddDbContext(Action<IServiceProvider, DbContextOptionsBuilder> builder)
+            {
+                _dbContextBuilder = builder;
+            }
+
+            internal Action<IServiceProvider, DbContextOptionsBuilder> _dbContextBuilder { get; set; }
+
+            internal UserServicesConfiguration _configuration = new UserServicesConfiguration();
         }
 
         /// <summary>
@@ -33,7 +57,7 @@ namespace OksidiCom.AspNetCoreServices.UserServices
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static void AddUserServices(this IServiceCollection services, IConfiguration configuration, AddUserServicesOptions addUserServicesOptions = null)
+        public static void AddUserServices(this IServiceCollection services, Action<AddUserServicesOptions> createOptions = null)
         {
             // Ensure that AddMvcCore/AddMvc has not been called before registering user services
             for (int i = 0; i < services.Count; i++)
@@ -45,15 +69,8 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                 }
             }
 
-            // Read the UserServices from appsettings.json
-            var userServicesConfiguration = new UserServicesConfiguration();
-            configuration.GetSection("UserServices").Bind(userServicesConfiguration);
-
-            // Code provided options
-            if (addUserServicesOptions == null)
-            {
-                addUserServicesOptions = new AddUserServicesOptions();
-            }
+            var opts = new AddUserServicesOptions();
+            createOptions?.Invoke(opts);
 
             // Add views provided in this assembly.     
             services.Configure<RazorViewEngineOptions>(o =>
@@ -62,10 +79,10 @@ namespace OksidiCom.AspNetCoreServices.UserServices
             });
 
             services
-                .AddDbContext<UserServiceContext>((s, o) =>
+                .AddDbContext<UserServiceContext>((contextServices, builder) =>
                 {
-                    o.UseOpenIddict();
-                    addUserServicesOptions.DbContextOptions(s, o);
+                    builder.UseOpenIddict();
+                    opts._dbContextBuilder(contextServices, builder);
                 })
                 .AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<UserServiceContext>()
@@ -90,39 +107,39 @@ namespace OksidiCom.AspNetCoreServices.UserServices
                     o.LogoutPath = "/Account/Logout";
                 });*/
 
-            if (userServicesConfiguration?.Google != null)
+            if (opts._configuration?.Google != null)
             {
                 auth.AddGoogle(o =>
                 {
-                    o.ClientId = userServicesConfiguration.Google.ClientId;
-                    o.ClientSecret = userServicesConfiguration.Google.ClientSecret;
+                    o.ClientId = opts._configuration.Google.ClientId;
+                    o.ClientSecret = opts._configuration.Google.ClientSecret;
                     o.SignInScheme = "Identity.External";
                 });
             }
 
             services.AddOpenIddict(options =>
             {
-                // Register the Entity Framework stores.
-                options.AddEntityFrameworkCoreStores<UserServiceContext>();
+                    // Register the Entity Framework stores.
+                    options.AddEntityFrameworkCoreStores<UserServiceContext>();
 
-                // Register the ASP.NET Core MVC binder used by OpenIddict.
-                // Note: if you don't call this method, you won't be able to
-                // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
-                options.AddMvcBinders();
+                    // Register the ASP.NET Core MVC binder used by OpenIddict.
+                    // Note: if you don't call this method, you won't be able to
+                    // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
+                    options.AddMvcBinders();
 
-                // Enable the token endpoint (required to use the password flow).
-                //options.EnableTokenEndpoint("/connect/token");
+                    // Enable the token endpoint (required to use the password flow).
+                    //options.EnableTokenEndpoint("/connect/token");
 
-                options.AllowImplicitFlow()
-                    .EnableAuthorizationEndpoint("/connect/authorize")
-                    .EnableTokenEndpoint("/connect/token")
-                    .AllowRefreshTokenFlow();
+                    options.AllowImplicitFlow()
+                            .EnableAuthorizationEndpoint("/connect/authorize")
+                            .EnableTokenEndpoint("/connect/token")
+                            .AllowRefreshTokenFlow();
 
-                // Allow client applications to use the grant_type=password flow.
-                //options.AllowPasswordFlow();
+                    // Allow client applications to use the grant_type=password flow.
+                    //options.AllowPasswordFlow();
 
-                // During development, you can disable the HTTPS requirement.
-                options.DisableHttpsRequirement();
+                    // During development, you can disable the HTTPS requirement.
+                    options.DisableHttpsRequirement();
                 options.AddDevelopmentSigningCertificate();
             });
         }

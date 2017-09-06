@@ -15,6 +15,7 @@ using SampleApi.Db;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data.SqlClient;
+using System;
 
 namespace SampleApi
 {
@@ -30,14 +31,20 @@ namespace SampleApi
             Configuration = configuration;
         }
 
+        private void SharedConnection(IServiceProvider serviceProvider, DbContextOptionsBuilder dbContextOptionsBuilder)
+        {
+            serviceProvider.GetService<DbContextConnectionConfiguration>().Configure(dbContextOptionsBuilder);
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUserServices(Configuration);
-            services.AddMvc();
-            services.AddDbContext<BusinessDbContext>((s, o) =>
+            services.AddUserServices(opts =>
             {
-                s.GetService<DbContextConnectionConfiguration>().Configure(o);
+                opts.AddDbContext(SharedConnection);
+                opts.Configure(Configuration);
             });
+            services.AddMvc();
+            services.AddDbContext<BusinessDbContext>(SharedConnection);
 
             if (Environment.IsDevelopment())
             {
