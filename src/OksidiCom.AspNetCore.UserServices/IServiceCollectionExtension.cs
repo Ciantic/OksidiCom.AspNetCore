@@ -19,6 +19,9 @@ namespace OksidiCom.AspNetCore.UserServices
 
     public static class IServiceCollectionExtension
     {
+        /// <summary>
+        /// UserServices options
+        /// </summary>
         public class AddUserServicesOptions
         {
             /// <summary>
@@ -68,7 +71,7 @@ namespace OksidiCom.AspNetCore.UserServices
         /// Note: This must be called before `UseMvc()`
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
+        /// <param name="createOptions"></param>
         public static void AddUserServices(this IServiceCollection services, Action<AddUserServicesOptions> createOptions = null)
         {
             // Ensure that AddMvcCore/AddMvc has not been called before registering user services
@@ -138,28 +141,28 @@ namespace OksidiCom.AspNetCore.UserServices
 
             services.AddOpenIddict(options =>
             {
-                    // Register the Entity Framework stores.
-                    options.AddEntityFrameworkCoreStores<UserServiceContext>();
+                // Register the Entity Framework stores.
+                options.AddEntityFrameworkCoreStores<UserServiceContext>();
 
-                    // Register the ASP.NET Core MVC binder used by OpenIddict.
-                    // Note: if you don't call this method, you won't be able to
-                    // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
-                    options.AddMvcBinders();
+                // Register the ASP.NET Core MVC binder used by OpenIddict.
+                // Note: if you don't call this method, you won't be able to
+                // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
+                options.AddMvcBinders();
 
-                    // Enable the token endpoint (required to use the password flow).
-                    //options.EnableTokenEndpoint("/connect/token");
+                // Enable the token endpoint (required to use the password flow).
+                //options.EnableTokenEndpoint("/connect/token");
 
-                    options.AllowImplicitFlow()
-                            .EnableAuthorizationEndpoint("/connect/authorize")
-                            .EnableTokenEndpoint("/connect/token")
-                            .EnableLogoutEndpoint("/connect/logout")
-                            .AllowRefreshTokenFlow();
+                options.AllowImplicitFlow()
+                        .EnableAuthorizationEndpoint("/connect/authorize")
+                        .EnableTokenEndpoint("/connect/token")
+                        .EnableLogoutEndpoint("/connect/logout")
+                        .AllowRefreshTokenFlow();
 
-                    // Allow client applications to use the grant_type=password flow.
-                    //options.AllowPasswordFlow();
+                // Allow client applications to use the grant_type=password flow.
+                //options.AllowPasswordFlow();
 
-                    // During development, you can disable the HTTPS requirement.
-                    options.DisableHttpsRequirement();
+                // During development, you can disable the HTTPS requirement.
+                options.DisableHttpsRequirement();
                 options.AddDevelopmentSigningCertificate();
             });
         }

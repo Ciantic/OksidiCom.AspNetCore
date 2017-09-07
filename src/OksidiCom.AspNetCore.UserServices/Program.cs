@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace OksidiCom.AspNetCore.UserServices
 {
+    /// <summary>
+    /// Program for internally testing the UserServices
+    /// </summary>
     internal class Program
     {
         public static void Main(string[] args)

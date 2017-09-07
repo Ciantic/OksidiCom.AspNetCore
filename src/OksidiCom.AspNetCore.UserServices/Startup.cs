@@ -9,6 +9,9 @@ using OksidiCom.AspNetCore.UserServices.Db;
 
 namespace OksidiCom.AspNetCore.UserServices
 {
+    /// <summary>
+    /// Startup for internally testing the UserServices
+    /// </summary>
     internal class Startup
     {
         private IHostingEnvironment Environment { get; }
