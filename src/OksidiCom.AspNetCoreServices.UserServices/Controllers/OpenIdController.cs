@@ -21,6 +21,7 @@ using OpenIddict.Core;
 using OpenIddict.Models;
 using OksidiCom.AspNetCoreServices.UserServices.Models;
 using OksidiCom.AspNetCoreServices.UserServices.ViewModels.Shared;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace OksidiCom.AspNetCoreServices.UserServices.Controllers
 {
@@ -74,11 +75,21 @@ namespace OksidiCom.AspNetCoreServices.UserServices.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return View("Error", new ErrorViewModel
+                // Your user in the cookie is invalid, remove cookie and retry with Authorize
+                await _signInManager.SignOutAsync();
+
+                var retryUrl = QueryHelpers.AddQueryString(Url.Action(nameof(Authorize)), new Dictionary<string, string>()
                 {
-                    Error = OpenIdConnectConstants.Errors.ServerError,
-                    ErrorDescription = "An internal error has occurred"
+                    { "response_type" , request.ResponseType },
+                    { "client_id", request.ClientId },
+                    { "scope", request.Scope },
+                    { "nonce", request.Nonce },
+                    { "state", request.State },
+                    { "display", request.Display },
+                    { "redirect_uri", request.RedirectUri }
                 });
+
+                return Redirect(retryUrl);
             }
 
             // Create a new authentication ticket.
