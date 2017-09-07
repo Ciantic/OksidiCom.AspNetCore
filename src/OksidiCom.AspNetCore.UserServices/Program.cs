@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace OksidiCom.AspNetCoreServices.UserServices
+namespace OksidiCom.AspNetCore.UserServices
 {
     internal class Program
     {

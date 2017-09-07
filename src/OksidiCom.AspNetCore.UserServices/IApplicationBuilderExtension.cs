@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace OksidiCom.AspNetCoreServices.UserServices
+namespace OksidiCom.AspNetCore.UserServices
 {
     public static class IApplicationBuilderExtension
     {

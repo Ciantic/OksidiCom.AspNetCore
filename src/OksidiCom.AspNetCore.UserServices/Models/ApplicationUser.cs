@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace OksidiCom.AspNetCoreServices.UserServices.Models
+namespace OksidiCom.AspNetCore.UserServices.Models
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

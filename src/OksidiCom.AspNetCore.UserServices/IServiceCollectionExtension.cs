@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
-using OksidiCom.AspNetCoreServices.UserServices.Models;
-using OksidiCom.AspNetCoreServices.UserServices.Db;
+using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserServices.Db;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using OksidiCom.AspNetCoreServices.Common.Db;
+using OksidiCom.AspNetCore.Common.Db;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.FileProviders;
@@ -14,7 +14,7 @@ using System.Reflection;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.EntityFrameworkCore;
 
-namespace OksidiCom.AspNetCoreServices.UserServices
+namespace OksidiCom.AspNetCore.UserServices
 {
 
     public static class IServiceCollectionExtension

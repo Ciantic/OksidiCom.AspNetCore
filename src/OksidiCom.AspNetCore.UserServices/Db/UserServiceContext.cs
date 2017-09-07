@@ -1,9 +1,9 @@
 ﻿using System;
-using OksidiCom.AspNetCoreServices.UserServices.Models;
+using OksidiCom.AspNetCore.UserServices.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace OksidiCom.AspNetCoreServices.UserServices.Db
+namespace OksidiCom.AspNetCore.UserServices.Db
 {
     public class UserServiceContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {

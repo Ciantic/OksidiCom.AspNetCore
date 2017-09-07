@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.Common;
 
-namespace OksidiCom.AspNetCoreServices.Common.Db
+namespace OksidiCom.AspNetCore.Common.Db
 {
 
     /// <summary>

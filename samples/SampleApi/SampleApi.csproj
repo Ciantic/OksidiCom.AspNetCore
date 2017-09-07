@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OksidiCom.AspNetCoreServices.UserServices\OksidiCom.AspNetCoreServices.UserServices.csproj" />
-    <ProjectReference Include="..\..\src\OksidiCom.AspNetCoreServices.Common\OksidiCom.AspNetCoreServices.Common.csproj" />
+    <ProjectReference Include="..\..\src\OksidiCom.AspNetCore.UserServices\OksidiCom.AspNetCore.UserServices.csproj" />
+    <ProjectReference Include="..\..\src\OksidiCom.AspNetCore.Common\OksidiCom.AspNetCore.Common.csproj" />
   </ItemGroup>
 
 </Project>

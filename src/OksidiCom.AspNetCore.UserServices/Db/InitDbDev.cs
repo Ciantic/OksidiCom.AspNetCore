@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using OksidiCom.AspNetCoreServices.UserServices.Models;
+using OksidiCom.AspNetCore.UserServices.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using OpenIddict.Models;
 using OpenIddict.Core;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace OksidiCom.AspNetCoreServices.UserServices.Db
+namespace OksidiCom.AspNetCore.UserServices.Db
 {
     internal class InitDbDev : IInitDb
     {

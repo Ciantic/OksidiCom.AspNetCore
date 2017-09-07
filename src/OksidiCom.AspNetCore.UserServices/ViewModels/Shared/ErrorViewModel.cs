@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OksidiCom.AspNetCoreServices.UserServices.ViewModels.Shared
+namespace OksidiCom.AspNetCore.UserServices.ViewModels.Shared
 {
     public class ErrorViewModel
     {

@@ -4,10 +4,10 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OksidiCom.AspNetCoreServices.Common.Db;
-using OksidiCom.AspNetCoreServices.UserServices.Db;
+using OksidiCom.AspNetCore.Common.Db;
+using OksidiCom.AspNetCore.UserServices.Db;
 
-namespace OksidiCom.AspNetCoreServices.UserServices
+namespace OksidiCom.AspNetCore.UserServices
 {
     internal class Startup
     {
@@ -26,6 +26,10 @@ namespace OksidiCom.AspNetCoreServices.UserServices
             services.AddUserServices(o =>
             {
                 o.Configure(Configuration);
+                o.AddDbContext((serviceProvider, dbContextOptionsBuilder) =>
+                {
+                    serviceProvider.GetService<DbContextConnectionConfiguration>().Configure(dbContextOptionsBuilder);
+                });
             });
             services.AddMvc();
 

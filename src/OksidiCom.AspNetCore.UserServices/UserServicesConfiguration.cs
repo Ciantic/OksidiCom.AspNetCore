@@ -1,4 +1,4 @@
-﻿namespace OksidiCom.AspNetCoreServices.UserServices
+﻿namespace OksidiCom.AspNetCore.UserServices
 {
     public class UserServicesConfiguration
     {

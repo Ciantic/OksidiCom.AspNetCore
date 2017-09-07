@@ -19,11 +19,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OpenIddict.Core;
 using OpenIddict.Models;
-using OksidiCom.AspNetCoreServices.UserServices.Models;
-using OksidiCom.AspNetCoreServices.UserServices.ViewModels.Shared;
+using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserServices.ViewModels.Shared;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace OksidiCom.AspNetCoreServices.UserServices.Controllers
+namespace OksidiCom.AspNetCore.UserServices.Controllers
 {
     public class OpenIdController : Controller
     {

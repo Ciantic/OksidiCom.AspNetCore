@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OksidiCom.AspNetCoreServices.Common\OksidiCom.AspNetCoreServices.Common.csproj" />
+    <ProjectReference Include="..\OksidiCom.AspNetCore.Common\OksidiCom.AspNetCore.Common.csproj" />
   </ItemGroup>
 
 </Project>
