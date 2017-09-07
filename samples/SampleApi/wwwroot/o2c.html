@@ -6,13 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>O2C</title>
-    <script>
-        document.writeln(window.location.hash);
-    </script>
+
 </head>
 
 <body>
-
+    The token and state appears here:
+    <div class="token" style="font-weight: bold;">
+        <script>
+            document.writeln(window.location.hash.slice(1).split("&").join("<br />"));
+        </script>
+    </div>
 </body>
 
 </html>

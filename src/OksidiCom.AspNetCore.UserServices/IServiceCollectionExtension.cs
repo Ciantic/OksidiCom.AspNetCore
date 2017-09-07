@@ -101,11 +101,11 @@ namespace OksidiCom.AspNetCore.UserServices
                     builder.UseOpenIddict();
                     dbContextBuilder(contextServices, builder);
                 })
-                .AddIdentity<ApplicationUser, ApplicationRole>(o =>
+                .AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 {
-                    o.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                    //options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                    //options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                    options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                    options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                    options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                 })
                 .AddEntityFrameworkStores<UserServiceContext>()
                 .AddDefaultTokenProviders();
@@ -129,12 +129,13 @@ namespace OksidiCom.AspNetCore.UserServices
                     o.Authority = conf.Jwt.Authority;
                 });
 
-            if (opts._configuration?.Google != null)
+            // External Google provider
+            if (conf?.Google != null)
             {
                 auth.AddGoogle(o =>
                 {
-                    o.ClientId = opts._configuration.Google.ClientId;
-                    o.ClientSecret = opts._configuration.Google.ClientSecret;
+                    o.ClientId = conf.Google.ClientId;
+                    o.ClientSecret = conf.Google.ClientSecret;
                     o.SignInScheme = "Identity.External";
                 });
             }
@@ -149,9 +150,6 @@ namespace OksidiCom.AspNetCore.UserServices
                 // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
                 options.AddMvcBinders();
 
-                // Enable the token endpoint (required to use the password flow).
-                //options.EnableTokenEndpoint("/connect/token");
-
                 options.AllowImplicitFlow()
                         .EnableAuthorizationEndpoint("/connect/authorize")
                         .EnableTokenEndpoint("/connect/token")
@@ -159,11 +157,15 @@ namespace OksidiCom.AspNetCore.UserServices
                         .AllowRefreshTokenFlow();
 
                 // Allow client applications to use the grant_type=password flow.
-                //options.AllowPasswordFlow();
+                // options.AllowPasswordFlow();
+
+                // Jwt
+                options.UseJsonWebTokens();
 
                 // During development, you can disable the HTTPS requirement.
                 options.DisableHttpsRequirement();
                 options.AddDevelopmentSigningCertificate();
+
             });
         }
     }
