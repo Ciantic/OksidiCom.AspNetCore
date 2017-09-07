@@ -40,7 +40,15 @@ namespace SampleApi
         {
             services.AddUserServices(opts =>
             {
+                // Normally you would add DbContext connections settings like this
+                // opts.AddDbContext(o => {
+                //     o.UseSqlite(Configuration.GetConnectionString("Default"));
+                // });
+
+                // If you want to share the connection between instances, you do it like this
                 opts.AddDbContext(SharedConnection);
+
+                // Read the configurations from appsettings.json UserServices property
                 opts.Configure(Configuration);
             });
             services.AddMvc();
@@ -58,14 +66,14 @@ namespace SampleApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitDb initDb)
         {
-            
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
 
+            // Remember to call UseUserServices before UseMvc
             app.UseUserServices();
             app.UseMvc();
 
-            initDb.InitAsync().Wait();
+            initDb.CreateAsync().Wait();
             initDb.PopulateAsync().Wait();
         }
     }

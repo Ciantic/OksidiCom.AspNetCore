@@ -21,7 +21,7 @@ namespace SampleApi
             WebHost.CreateDefaultBuilder(args)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseUrls("http://*:5002")
+                .UseUrls("http://localhost:5002")
                 .Build();
     }
 }

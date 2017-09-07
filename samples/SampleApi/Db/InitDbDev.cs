@@ -24,7 +24,7 @@ namespace SampleApi.Db
             this.businessDbContext = businessDbContext;
         }
 
-        public async Task InitAsync()
+        public async Task CreateAsync()
         {
             var userServiceDbCreator = userServiceContext.GetService<IRelationalDatabaseCreator>();
             await userServiceDbCreator.DeleteAsync();

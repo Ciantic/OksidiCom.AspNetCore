@@ -4,7 +4,7 @@ namespace SampleApi.Db
 {
     internal interface IInitDb
     {
-        Task InitAsync();
+        Task CreateAsync();
         Task PopulateAsync();
     }
 }
