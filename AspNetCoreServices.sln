@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OksidiCom.AspNetCore.UserServices", "src\OksidiCom.AspNetCore.UserServices\OksidiCom.AspNetCore.UserServices.csproj", "{EDF47B52-F5EC-4B2D-8522-A24EDC79BE0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OksidiCom.AspNetCore.UserService", "src\OksidiCom.AspNetCore.UserService\OksidiCom.AspNetCore.UserService.csproj", "{EDF47B52-F5EC-4B2D-8522-A24EDC79BE0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OksidiCom.AspNetCore.Common", "src\OksidiCom.AspNetCore.Common\OksidiCom.AspNetCore.Common.csproj", "{FA2F760C-B6F3-4622-AB73-8940A6B8B6ED}"
 EndProject

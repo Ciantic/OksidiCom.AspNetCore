@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace OksidiCom.AspNetCore.UserServices
+namespace OksidiCom.AspNetCore.UserService
 {
     /// <summary>
-    /// Program for internally testing the UserServices
+    /// Program for internally testing the UserService
     /// </summary>
     internal class Program
     {

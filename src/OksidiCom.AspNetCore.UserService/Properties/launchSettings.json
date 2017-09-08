@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "OksidiCom.AspNetCore.UserServices": {
+    "OksidiCom.AspNetCore.UserService": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",

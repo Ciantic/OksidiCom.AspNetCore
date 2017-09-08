@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using OksidiCom.AspNetCore.UserServices;
+using OksidiCom.AspNetCore.UserService;
 using Microsoft.Extensions.Configuration;
-using OksidiCom.AspNetCore.UserServices.Db;
+using OksidiCom.AspNetCore.UserService.Db;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using OksidiCom.AspNetCore.Common.Db;
@@ -38,7 +38,7 @@ namespace SampleApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUserServices(opts =>
+            services.AddUserService(opts =>
             {
                 // Normally you would add DbContext connections settings like this
                 // opts.AddDbContext(o => {
@@ -48,7 +48,7 @@ namespace SampleApi
                 // If you want to share the connection between instances, you do it like this
                 opts.AddDbContext(SharedConnection);
 
-                // Read the configurations from appsettings.json UserServices property
+                // Read the configurations from appsettings.json UserService property
                 opts.Configure(Configuration);
             });
             services.AddMvc();
@@ -69,8 +69,8 @@ namespace SampleApi
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
 
-            // Remember to call UseUserServices before UseMvc
-            app.UseUserServices();
+            // Remember to call UseUserService before UseMvc
+            app.UseUserService();
             app.UseMvc();
 
             initDb.InitAsync().Wait();

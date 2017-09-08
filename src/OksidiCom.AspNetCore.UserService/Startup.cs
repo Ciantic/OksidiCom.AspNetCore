@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OksidiCom.AspNetCore.Common.Db;
-using OksidiCom.AspNetCore.UserServices.Db;
+using OksidiCom.AspNetCore.UserService.Db;
 
-namespace OksidiCom.AspNetCore.UserServices
+namespace OksidiCom.AspNetCore.UserService
 {
     /// <summary>
-    /// Startup for internally testing the UserServices
+    /// Startup for internally testing the UserService
     /// </summary>
     internal class Startup
     {
@@ -26,7 +26,7 @@ namespace OksidiCom.AspNetCore.UserServices
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddUserServices(o =>
+            services.AddUserService(o =>
             {
                 o.Configure(Configuration);
                 o.AddDbContext((serviceProvider, dbContextOptionsBuilder) =>
@@ -52,7 +52,7 @@ namespace OksidiCom.AspNetCore.UserServices
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseUserServices();
+            app.UseUserService();
             app.UseMvc();
 
             initDb.InitAsync().Wait();

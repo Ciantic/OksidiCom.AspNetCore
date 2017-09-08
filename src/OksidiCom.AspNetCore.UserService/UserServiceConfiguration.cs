@@ -1,9 +1,9 @@
-﻿namespace OksidiCom.AspNetCore.UserServices
+﻿namespace OksidiCom.AspNetCore.UserService
 {
     /// <summary>
     /// User services configuration at the appsettings.json
     /// </summary>
-    public class UserServicesConfiguration
+    public class UserServiceConfiguration
     {
         public class GoogleConfiguration
         {

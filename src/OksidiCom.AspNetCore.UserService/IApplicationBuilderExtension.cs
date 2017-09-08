@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace OksidiCom.AspNetCore.UserServices
+namespace OksidiCom.AspNetCore.UserService
 {
     public static class IApplicationBuilderExtension
     {
-        public static void UseUserServices(this IApplicationBuilder app)
+        public static void UseUserService(this IApplicationBuilder app)
         {
             // TODO: Verify that UseMvc has NOT been called yet
 

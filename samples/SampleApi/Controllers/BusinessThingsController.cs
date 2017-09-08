@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OksidiCom.AspNetCore.UserServices.Models;
-using OksidiCom.AspNetCore.UserServices.Mvc;
+using OksidiCom.AspNetCore.UserService.Models;
+using OksidiCom.AspNetCore.UserService.Mvc;
 using SampleApi.Db;
 using SampleApi.Models;
 

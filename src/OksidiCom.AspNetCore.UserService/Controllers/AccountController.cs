@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserService.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-namespace OksidiCom.AspNetCore.UserServices.Controllers
+namespace OksidiCom.AspNetCore.UserService.Controllers
 {
     [Authorize]
     [Route("connect/[controller]")]

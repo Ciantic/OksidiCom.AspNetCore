@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
-using OksidiCom.AspNetCore.UserServices.Models;
-using OksidiCom.AspNetCore.UserServices.Db;
+using OksidiCom.AspNetCore.UserService.Models;
+using OksidiCom.AspNetCore.UserService.Db;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using OksidiCom.AspNetCore.Common.Db;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -14,36 +14,36 @@ using System.Reflection;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.EntityFrameworkCore;
 
-namespace OksidiCom.AspNetCore.UserServices
+namespace OksidiCom.AspNetCore.UserService
 {
 
     public static class IServiceCollectionExtension
     {
         /// <summary>
-        /// UserServices options
+        /// UserService options
         /// </summary>
-        public class AddUserServicesOptions
+        public class AddUserServiceOptions
         {
             /// <summary>
-            /// Configure UserServices from appsettings.json, assumes "UserServices" property.
+            /// Configure UserService from appsettings.json, assumes "UserService" property.
             /// </summary>
             /// <param name="configuration"></param>
             public void Configure(IConfiguration configuration)
             {
-                configuration.GetSection("UserServices").Bind(_configuration);
+                configuration.GetSection("UserService").Bind(_configuration);
             }
 
             /// <summary>
-            /// Configure manually the UserServices
+            /// Configure manually the UserService
             /// </summary>
-            /// <param name="userServicesConfiguration"></param>
-            public void Configure(UserServicesConfiguration userServicesConfiguration)
+            /// <param name="UserServiceConfiguration"></param>
+            public void Configure(UserServiceConfiguration UserServiceConfiguration)
             {
-                _configuration = userServicesConfiguration;
+                _configuration = UserServiceConfiguration;
             }
 
             /// <summary>
-            /// Add DbContext options for UserServicesContext
+            /// Add DbContext options for UserServiceContext
             /// </summary>
             /// <param name="builder"></param>
             public void AddDbContext(Action<DbContextOptionsBuilder> builder)
@@ -52,7 +52,7 @@ namespace OksidiCom.AspNetCore.UserServices
             }
 
             /// <summary>
-            /// Add DbContext options for UserServicesContext
+            /// Add DbContext options for UserServiceContext
             /// </summary>
             /// <param name="builder"></param>
             public void AddDbContext(Action<IServiceProvider, DbContextOptionsBuilder> builder)
@@ -62,7 +62,7 @@ namespace OksidiCom.AspNetCore.UserServices
 
             internal Action<IServiceProvider, DbContextOptionsBuilder> _dbContextBuilder { get; set; }
 
-            internal UserServicesConfiguration _configuration = new UserServicesConfiguration();
+            internal UserServiceConfiguration _configuration = new UserServiceConfiguration();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace OksidiCom.AspNetCore.UserServices
         /// </summary>
         /// <param name="services"></param>
         /// <param name="createOptions"></param>
-        public static void AddUserServices(this IServiceCollection services, Action<AddUserServicesOptions> createOptions = null)
+        public static void AddUserService(this IServiceCollection services, Action<AddUserServiceOptions> createOptions = null)
         {
             // Ensure that AddMvcCore/AddMvc has not been called before registering user services
             for (int i = 0; i < services.Count; i++)
@@ -80,11 +80,11 @@ namespace OksidiCom.AspNetCore.UserServices
                 var service = services[i];
                 if (service.ServiceType == typeof(MvcRouteHandler))
                 {
-                    throw new InvalidOperationException("AddUserServices() must be called before AddMvc()");
+                    throw new InvalidOperationException("AddUserService() must be called before AddMvc()");
                 }
             }
 
-            var opts = new AddUserServicesOptions();
+            var opts = new AddUserServiceOptions();
             createOptions?.Invoke(opts);
             var conf = opts._configuration;
             var dbContextBuilder = opts._dbContextBuilder;

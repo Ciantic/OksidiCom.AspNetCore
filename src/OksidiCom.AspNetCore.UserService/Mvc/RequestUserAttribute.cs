@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OksidiCom.AspNetCore.Common.ApiErrors;
-using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserService.Models;
 
-namespace OksidiCom.AspNetCore.UserServices.Mvc
+namespace OksidiCom.AspNetCore.UserService.Mvc
 {
     /// <summary>
     /// Request user modelbinder from UserManager automatically

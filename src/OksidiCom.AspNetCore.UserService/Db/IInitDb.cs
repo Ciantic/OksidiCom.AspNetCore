@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace OksidiCom.AspNetCore.UserServices.Db
+namespace OksidiCom.AspNetCore.UserService.Db
 {
     internal interface IInitDb
     {

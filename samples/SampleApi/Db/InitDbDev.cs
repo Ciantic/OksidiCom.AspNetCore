@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using OksidiCom.AspNetCore.UserServices.Db;
+using OksidiCom.AspNetCore.UserService.Db;
 using Microsoft.EntityFrameworkCore.Storage;
 using SampleApi.Models;
-using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserService.Models;
 using Microsoft.AspNetCore.Identity;
 using OpenIddict.Models;
 using OpenIddict.Core;

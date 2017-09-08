@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OksidiCom.AspNetCore.UserServices\OksidiCom.AspNetCore.UserServices.csproj" />
+    <ProjectReference Include="..\..\src\OksidiCom.AspNetCore.UserService\OksidiCom.AspNetCore.UserService.csproj" />
     <ProjectReference Include="..\..\src\OksidiCom.AspNetCore.Common\OksidiCom.AspNetCore.Common.csproj" />
   </ItemGroup>
 
