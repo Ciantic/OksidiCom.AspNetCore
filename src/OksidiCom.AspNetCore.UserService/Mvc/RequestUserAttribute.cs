@@ -10,7 +10,7 @@ namespace OksidiCom.AspNetCore.UserService.Mvc
     /// <summary>
     /// Request user modelbinder from UserManager automatically
     /// </summary>
-    public class RequestUserModelBinder : IModelBinder
+    internal class RequestUserModelBinder : IModelBinder
     {
         private readonly UserManager<ApplicationUser> _userManager;
         public RequestUserModelBinder(UserManager<ApplicationUser> userManager)

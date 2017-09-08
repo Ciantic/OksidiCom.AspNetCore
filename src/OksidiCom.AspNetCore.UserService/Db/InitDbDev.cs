@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using OpenIddict.Models;
 using OpenIddict.Core;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Threading;
 
 namespace OksidiCom.AspNetCore.UserService.Db
 {
@@ -13,11 +14,13 @@ namespace OksidiCom.AspNetCore.UserService.Db
     {
         private readonly UserServiceContext userServiceContext;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly OpenIddictApplicationManager<OpenIddictApplication> applicationManager;
 
-        public InitDbDev(UserServiceContext userServiceContext, UserManager<ApplicationUser> userManager)
+        public InitDbDev(UserServiceContext userServiceContext, UserManager<ApplicationUser> userManager, OpenIddictApplicationManager<OpenIddictApplication> applicationManager)
         {
             this.userServiceContext = userServiceContext;
             this.userManager = userManager;
+            this.applicationManager = applicationManager;
         }
 
         private async Task<List<ApplicationUser>> CreateUsers()
@@ -40,25 +43,16 @@ namespace OksidiCom.AspNetCore.UserService.Db
             return newUsers;
         }
 
-        private async Task<List<OpenIddictApplication>> CreateOpenIdClients()
+        private async Task CreateOpenIdClients()
         {
-            var newClients = new List<OpenIddictApplication>()
+            await applicationManager.CreateAsync(new OpenIddictApplication()
             {
-                new OpenIddictApplication()
-                {
-                    ClientId = "example-client",
-                    ClientSecret = "example-secret",
-                    DisplayName = "Example Client",
-                    RedirectUri = "http://localhost:5002/o2c.html",
-                    LogoutRedirectUri = "http://localhost:5002/o2c-logout.html",
-                    Type = OpenIddictConstants.ClientTypes.Public
-                }
-            };
-
-            userServiceContext.AddRange(newClients);
-            await userServiceContext.SaveChangesAsync();
-
-            return newClients;
+                ClientId = "example-client",
+                DisplayName = "Example Client",
+                RedirectUri = "http://localhost:5002/o2c.html",
+                LogoutRedirectUri = "http://localhost:5002/o2c-logout.html",
+                Type = OpenIddictConstants.ClientTypes.Public
+            }, new CancellationToken());
         }
 
         private async Task CreateDatabaseAsync()

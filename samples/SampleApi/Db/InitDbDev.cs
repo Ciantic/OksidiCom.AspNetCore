@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using OpenIddict.Models;
 using OpenIddict.Core;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Threading;
 
 namespace SampleApi.Db
 {
@@ -16,12 +17,15 @@ namespace SampleApi.Db
         private readonly UserManager<ApplicationUser> userManager;
         private readonly UserServiceContext userServiceContext;
         private readonly BusinessDbContext businessDbContext;
+        private readonly OpenIddictApplicationManager<OpenIddictApplication> applicationManager;
 
-        public InitDbDev(UserManager<ApplicationUser> userManager, UserServiceContext userServiceContext, BusinessDbContext businessDbContext)
+        public InitDbDev(UserManager<ApplicationUser> userManager, UserServiceContext userServiceContext,
+            BusinessDbContext businessDbContext, OpenIddictApplicationManager<OpenIddictApplication> applicationManager)
         {
             this.userManager = userManager;
             this.userServiceContext = userServiceContext;
             this.businessDbContext = businessDbContext;
+            this.applicationManager = applicationManager;
         }
 
         private async Task CreateDatabaseAsync()
@@ -56,25 +60,16 @@ namespace SampleApi.Db
             return newUsers;
         }
 
-        private async Task<List<OpenIddictApplication>> CreateOpenIdClients()
+        private async Task CreateOpenIdClients()
         {
-            var newClients = new List<OpenIddictApplication>()
+            await applicationManager.CreateAsync(new OpenIddictApplication()
             {
-                new OpenIddictApplication()
-                {
-                    ClientId = "example-client",
-                    ClientSecret = "example-secret",
-                    DisplayName = "Example Client",
-                    RedirectUri = "http://localhost:5002/o2c.html",
-                    LogoutRedirectUri = "http://localhost:5002/o2c-logout.html",
-                    Type = OpenIddictConstants.ClientTypes.Public
-                }
-            };
-
-            userServiceContext.AddRange(newClients);
-            await userServiceContext.SaveChangesAsync();
-
-            return newClients;
+                ClientId = "example-client",
+                DisplayName = "Example Client",
+                RedirectUri = "http://localhost:5002/o2c.html",
+                LogoutRedirectUri = "http://localhost:5002/o2c-logout.html",
+                Type = OpenIddictConstants.ClientTypes.Public
+            }, new CancellationToken());
         }
 
         private async Task PopulateAsync()
