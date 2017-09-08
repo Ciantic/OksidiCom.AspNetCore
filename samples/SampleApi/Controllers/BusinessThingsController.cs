@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OksidiCom.AspNetCore.UserServices.Models;
+using OksidiCom.AspNetCore.UserServices.Mvc;
 using SampleApi.Db;
 using SampleApi.Models;
 
@@ -16,8 +18,11 @@ class BusinessThingsController
     }
 
     [HttpPost("[action]")]
-    public async Task<BusinessThing> MyBusinessThing()
+    public async Task<IActionResult> MyBusinessThing([RequestUser] ApplicationUser user)
     {
-        return null;
+        return new ContentResult()
+        {
+            Content = user.Email
+        };
     }
 }

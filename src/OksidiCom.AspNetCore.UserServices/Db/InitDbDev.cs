@@ -61,12 +61,18 @@ namespace OksidiCom.AspNetCore.UserServices.Db
             return newClients;
         }
 
-        public async Task InitAsync()
+        private async Task CreateDatabaseAsync()
         {
+
             var userServiceDbCreator = userServiceContext.GetService<IRelationalDatabaseCreator>();
             await userServiceDbCreator.DeleteAsync();
             await userServiceDbCreator.CreateAsync();
             await userServiceDbCreator.CreateTablesAsync();
+        }
+
+        public async Task InitAsync()
+        {
+            await CreateDatabaseAsync();
             await CreateUsers();
             await CreateOpenIdClients();
         }

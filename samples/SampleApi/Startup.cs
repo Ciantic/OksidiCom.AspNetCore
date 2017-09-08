@@ -73,8 +73,7 @@ namespace SampleApi
             app.UseUserServices();
             app.UseMvc();
 
-            initDb.CreateAsync().Wait();
-            initDb.PopulateAsync().Wait();
+            initDb.InitAsync().Wait();
         }
     }
 }

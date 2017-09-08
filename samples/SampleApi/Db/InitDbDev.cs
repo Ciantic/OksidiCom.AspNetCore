@@ -24,7 +24,7 @@ namespace SampleApi.Db
             this.businessDbContext = businessDbContext;
         }
 
-        public async Task CreateAsync()
+        private async Task CreateDatabaseAsync()
         {
             var userServiceDbCreator = userServiceContext.GetService<IRelationalDatabaseCreator>();
             await userServiceDbCreator.DeleteAsync();
@@ -77,7 +77,7 @@ namespace SampleApi.Db
             return newClients;
         }
 
-        public async Task PopulateAsync()
+        private async Task PopulateAsync()
         {
             var newUsers = await CreateUsers();
 
@@ -97,6 +97,12 @@ namespace SampleApi.Db
                 }
             };
             await businessDbContext.BusinessThings.AddRangeAsync(businessThings);
+        }
+
+        public async Task InitAsync()
+        {
+            await CreateDatabaseAsync();
+            await PopulateAsync();
         }
     }
 }
