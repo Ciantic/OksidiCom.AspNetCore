@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OksidiCom.AspNetCore.Common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApi", "samples\SampleApi\SampleApi.csproj", "{134F6465-71F6-4034-9670-9B83C4F845B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OksidiCom.UserService.Test", "test\OksidiCom.UserService.Test\OksidiCom.UserService.Test.csproj", "{9A9395E9-B9C7-4E99-B2BD-9E1609037519}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{134F6465-71F6-4034-9670-9B83C4F845B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134F6465-71F6-4034-9670-9B83C4F845B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134F6465-71F6-4034-9670-9B83C4F845B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A9395E9-B9C7-4E99-B2BD-9E1609037519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A9395E9-B9C7-4E99-B2BD-9E1609037519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A9395E9-B9C7-4E99-B2BD-9E1609037519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A9395E9-B9C7-4E99-B2BD-9E1609037519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
