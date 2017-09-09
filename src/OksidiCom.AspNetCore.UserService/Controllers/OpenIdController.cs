@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace OksidiCom.AspNetCore.UserService.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Identity.Application")]
     public class OpenIdController : Controller
     {
         private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
@@ -44,7 +45,7 @@ namespace OksidiCom.AspNetCore.UserService.Controllers
             _userManager = userManager;
         }
 
-        [Authorize, HttpGet("~/connect/authorize")]
+        [HttpGet("~/connect/authorize")]
         public async Task<IActionResult> Authorize(OpenIdConnectRequest request)
         {
             Debug.Assert(request.IsAuthorizationRequest(),

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OksidiCom.AspNetCore.UserService.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Identity.Application")]
     [Route("connect/[controller]")]
     public class AccountController : Controller
     {

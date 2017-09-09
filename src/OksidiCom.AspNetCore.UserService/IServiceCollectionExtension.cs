@@ -13,6 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace OksidiCom.AspNetCore.UserService
 {
@@ -122,11 +123,16 @@ namespace OksidiCom.AspNetCore.UserService
                 o.Cookie.Path = "/connect";
             });
 
-            var auth = services.AddAuthentication()
+            var auth = services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(o =>
                 {
                     o.Audience = conf.Jwt.Audience;
                     o.Authority = conf.Jwt.Authority;
+                    o.RequireHttpsMetadata = false;
                 });
 
             // External Google provider
