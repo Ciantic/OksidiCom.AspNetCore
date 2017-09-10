@@ -24,14 +24,15 @@ namespace OksidiCom.UserService.Test
             services.AddUserService(opts =>
             {
                 opts.AddDbContext(o => o.UseSqlite(connection));
-                //opts.Configure(new UserServiceConfiguration()
-                //{
-                //    Jwt = new UserServiceConfiguration.JwtConfiguration()
-                //    {
-                //        Audience = "http://localhost",
-                //        Authority = "http://localhost"
-                //    }
-                //});
+                opts.Configure(new UserServiceConfiguration()
+                {
+                    //Jwt = new UserServiceConfiguration.JwtConfiguration()
+                    //{
+                    //    Audience = "http://localhost",
+                    //    Authority = "http://localhost",
+                    //    RequireHttpsMetadata = false,
+                    //}
+                });
             });
             services.AddSingleton(Mock.Of<IAntiforgery>());
             services.AddMvc();
