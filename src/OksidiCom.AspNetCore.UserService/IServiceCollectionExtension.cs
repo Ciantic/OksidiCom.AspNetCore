@@ -14,6 +14,7 @@ using System.Reflection;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AspNet.Security.OAuth.Validation;
 
 namespace OksidiCom.AspNetCore.UserService
 {
@@ -125,15 +126,34 @@ namespace OksidiCom.AspNetCore.UserService
 
             var auth = services.AddAuthentication(o =>
             {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(o =>
+
+                if (conf?.Jwt != null)
+                {
+                    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    //o.DefaultForbidScheme ?
+                }
+                else
+                {
+                    o.DefaultAuthenticateScheme = OAuthValidationDefaults.AuthenticationScheme;
+                    o.DefaultChallengeScheme = OAuthValidationDefaults.AuthenticationScheme;
+                    //o.DefaultForbidScheme ?
+                }
+            });
+
+            if (conf?.Jwt != null)
+            {
+                auth.AddJwtBearer(o =>
                 {
                     o.Audience = conf.Jwt.Audience;
                     o.Authority = conf.Jwt.Authority;
-                    o.RequireHttpsMetadata = false;
+                    o.RequireHttpsMetadata = conf.Jwt.RequireHttpsMetadata;
                 });
+            }
+            else
+            {
+                auth.AddOAuthValidation();
+            }
 
             // External Google provider
             if (conf?.Google != null)
@@ -165,8 +185,11 @@ namespace OksidiCom.AspNetCore.UserService
                 // Allow client applications to use the grant_type=password flow.
                 // options.AllowPasswordFlow();
 
-                // Jwt
-                options.UseJsonWebTokens();
+                // Jwt access tokens
+                if (conf?.Jwt != null)
+                {
+                    options.UseJsonWebTokens();
+                }
 
                 // During development, you can disable the HTTPS requirement.
                 options.DisableHttpsRequirement();

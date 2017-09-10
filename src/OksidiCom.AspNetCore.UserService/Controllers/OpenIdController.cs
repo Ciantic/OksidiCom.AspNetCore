@@ -243,6 +243,7 @@ namespace OksidiCom.AspNetCore.UserService.Controllers
                 }
 
                 var destinations = new List<string>();
+                //destinations.Add(OpenIdConnectConstants.Destinations.AccessToken);
 
                 // if (claim.Type == OpenIdConnectConstants.Claims.Subject)
                 // {

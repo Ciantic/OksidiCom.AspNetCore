@@ -16,8 +16,9 @@
         {
             public string Authority { get; set; }
             public string Audience { get; set; }
+            public bool RequireHttpsMetadata { get; set; } = true;
         }
 
-        public JwtConfiguration Jwt { get; set; } = new JwtConfiguration();
+        public JwtConfiguration Jwt { get; set; }
     }
 }

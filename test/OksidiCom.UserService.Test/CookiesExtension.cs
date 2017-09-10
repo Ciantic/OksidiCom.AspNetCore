@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OksidiCom.UserService.Test
 {
-    public static class ResponseCookiesExtension
+    public static class CookiesExtension
     {
 
         public static IDictionary<string, string> GetCookies(this HttpResponseMessage response)

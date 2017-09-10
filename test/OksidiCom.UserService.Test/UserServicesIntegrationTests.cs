@@ -4,33 +4,22 @@ using OksidiCom.AspNetCore.UserService.Mvc;
 using System;
 using Xunit;
 using System.Net.Http;
-using Microsoft.Extensions.DependencyInjection;
-using OksidiCom.AspNetCore.UserService;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using OksidiCom.AspNetCore.UserService.Db;
-using OpenIddict.Core;
-using OpenIddict.Models;
-using System.Threading;
-using Microsoft.AspNetCore.Identity;
 using OksidiCom.AspNetCore.UserService.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Antiforgery.Internal;
 using System.Text.RegularExpressions;
 using Microsoft.Net.Http.Headers;
 using System.Linq;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
 using Microsoft.AspNetCore.WebUtilities;
 using AspNet.Security.OAuth.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Newtonsoft.Json;
 
 namespace OksidiCom.UserService.Test
 {
@@ -44,55 +33,12 @@ namespace OksidiCom.UserService.Test
         }
     }
 
-    public class TestStartup
-    {
-        private SqliteConnection connection = new SqliteConnection("Data Source=:memory:");
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            connection.Open();
-            services.AddUserService(opts =>
-            {
-                opts.AddDbContext(o => o.UseSqlite(connection));
-            });
-            services.AddSingleton(Mock.Of<IAntiforgery>());
-            services.AddMvc();
-        }
-
-        public void Configure(IApplicationBuilder app, UserServiceContext userServiceContext, OpenIddictApplicationManager<OpenIddictApplication> applicationManager, UserManager<ApplicationUser> userManager)
-        {
-            app.UseUserService();
-            app.UseMvc();
-
-            // Create database
-            userServiceContext.Database.EnsureCreated();
-
-            // OpenId application 
-            applicationManager.CreateAsync(new OpenIddictApplication()
-            {
-                ClientId = "example-client",
-                DisplayName = "Example Client",
-                LogoutRedirectUri = "http://example.com/logout.html",
-                RedirectUri = "http://example.com/o2c.html",
-                Type = OpenIddictConstants.ClientTypes.Public
-
-            }, new CancellationToken()).GetAwaiter().GetResult();
-
-            // User
-            userManager.CreateAsync(new ApplicationUser()
-            {
-                UserName = "test@example.com",
-                Email = "test@example.com",
-            }, "!Test1").GetAwaiter().GetResult();
-        }
-    }
-
-    public class Tests
+    public class UserServicesIntegrationTests
     {
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
 
-        public Tests()
+        public UserServicesIntegrationTests()
         {
             _testServer = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
             _client = _testServer.CreateClient();
@@ -139,13 +85,15 @@ namespace OksidiCom.UserService.Test
             var response = await AuthenticatedRequest(HttpMethod.Get, "/RequestUser");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            Assert.Equal(content, "");
+            var applicationUser = JsonConvert.DeserializeObject<ApplicationUser>(content);
+            Assert.Equal(applicationUser.Email, "test@example.com");
         }
 
         private async Task<HttpResponseMessage> AuthenticatedRequest(HttpMethod method, string path)
         {
             var accessToken = await GetAccessToken();
             var request = new HttpRequestMessage(method, path);
+            //request.Headers.Accept = "application/json";
             request.Headers.Add("Authorization", "Bearer " + accessToken);
             return await _client.SendAsync(request);
         }
